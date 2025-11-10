@@ -1,0 +1,1043 @@
+{
+	"info": {
+		"_postman_id": "backtohome-api-collection",
+		"name": "BackToHome API",
+		"description": "Colección completa de la API BackToHome - Missing Persons Platform\n\nFlujo de uso:\n1. Health Check\n2. Registro de Usuario\n3. Login (guarda el token automáticamente)\n4. Actualizar Ubicación\n5. Crear Reporte de Persona Desaparecida\n6. Ver Alertas Cercanas\n7. Reportar Avistamiento\n8. Reportar Hallazgo\n9. Confirmar Hallazgo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_email",
+			"value": "test@backtohome.do",
+			"type": "string"
+		},
+		{
+			"key": "user_password",
+			"value": "Test123456",
+			"type": "string"
+		},
+		{
+			"key": "missing_person_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "found_report_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "0. Health Check",
+			"item": [
+				{
+					"name": "Root Health",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Health Check",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "1. Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"access_token\", jsonData.access_token);",
+									"    console.log(\"Token guardado automáticamente\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{user_email}}\",\n  \"password\": \"{{user_password}}\",\n  \"full_name\": \"Usuario Demo\",\n  \"phone\": \"+1-809-555-0100\",\n  \"date_of_birth\": \"1995-01-01\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Registra un nuevo usuario y guarda automáticamente el access_token"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"access_token\", jsonData.access_token);",
+									"    console.log(\"Token guardado automáticamente\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{user_email}}\",\n  \"password\": \"{{user_password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login y guarda automáticamente el access_token"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"me"
+							]
+						},
+						"description": "Obtiene información del usuario actual (requiere token)"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. User Profile",
+			"item": [
+				{
+					"name": "Get My Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/me/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"me",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"full_name\": \"Usuario Actualizado\",\n  \"phone\": \"+1-809-555-0200\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/me/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"me",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Location",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"latitude\": 18.4861,\n  \"longitude\": -69.9312\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/me/location",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"me",
+								"location"
+							]
+						},
+						"description": "Actualiza ubicación del usuario (Santo Domingo como ejemplo)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Settings",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"notification_radius\": 30,\n  \"fcm_token\": \"example_fcm_token_here\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/me/settings",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"me",
+								"settings"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Missing Persons",
+			"item": [
+				{
+					"name": "Create Missing Person Report",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"missing_person_id\", jsonData.id);",
+									"    console.log(\"Missing Person ID guardado: \" + jsonData.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "full_name",
+									"value": "Juan Pérez",
+									"type": "text"
+								},
+								{
+									"key": "nickname",
+									"value": "Juanito",
+									"type": "text"
+								},
+								{
+									"key": "age",
+									"value": "45",
+									"type": "text"
+								},
+								{
+									"key": "gender",
+									"value": "male",
+									"type": "text"
+								},
+								{
+									"key": "physical_description",
+									"value": "Altura 1.75m, complexión delgada, tez morena",
+									"type": "text"
+								},
+								{
+									"key": "clothing_description",
+									"value": "Pantalón jean azul, camisa blanca, zapatos negros",
+									"type": "text"
+								},
+								{
+									"key": "last_seen_address",
+									"value": "Zona Colonial, Santo Domingo",
+									"type": "text"
+								},
+								{
+									"key": "last_seen_latitude",
+									"value": "18.4731",
+									"type": "text"
+								},
+								{
+									"key": "last_seen_longitude",
+									"value": "-69.8826",
+									"type": "text"
+								},
+								{
+									"key": "last_seen_date",
+									"value": "2025-10-30T10:00:00Z",
+									"type": "text"
+								},
+								{
+									"key": "contact_name",
+									"value": "María Pérez",
+									"type": "text"
+								},
+								{
+									"key": "contact_phone",
+									"value": "+1-809-555-1234",
+									"type": "text"
+								},
+								{
+									"key": "contact_email",
+									"value": "maria@example.com",
+									"type": "text"
+								},
+								{
+									"key": "relationship",
+									"value": "hermana",
+									"type": "text"
+								},
+								{
+									"key": "circumstances",
+									"value": "Salió de casa en la mañana y no regresó",
+									"type": "text"
+								},
+								{
+									"key": "additional_info",
+									"value": "Lleva lentes, tiene cicatriz en brazo derecho",
+									"type": "text"
+								},
+								{
+									"key": "photo",
+									"type": "file",
+									"src": "",
+									"description": "Selecciona una foto de la persona desaparecida"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/missing-persons/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"missing-persons",
+								""
+							]
+						},
+						"description": "IMPORTANTE: Debes agregar una foto real en el campo 'photo'"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Missing Persons Near Me",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/missing-persons/?radius_km=20&limit=50&offset=0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"missing-persons",
+								""
+							],
+							"query": [
+								{
+									"key": "radius_km",
+									"value": "20"
+								},
+								{
+									"key": "limit",
+									"value": "50"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						},
+						"description": "Lista personas desaparecidas cerca de tu ubicación"
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Reports",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/missing-persons/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"missing-persons",
+								"me"
+							]
+						},
+						"description": "Obtiene mis reportes con estadísticas"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Missing Person Detail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/missing-persons/{{missing_person_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"missing-persons",
+								"{{missing_person_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Missing Person",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"circumstances\": \"Actualización: última vez visto en el Parque Mirador\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/missing-persons/{{missing_person_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"missing-persons",
+								"{{missing_person_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark as Found",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/missing-persons/{{missing_person_id}}/mark-found",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"missing-persons",
+								"{{missing_person_id}}",
+								"mark-found"
+							]
+						},
+						"description": "Marca tu propio reporte como encontrado"
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Report",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/missing-persons/{{missing_person_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"missing-persons",
+								"{{missing_person_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Sightings (Avistamientos)",
+			"item": [
+				{
+					"name": "Report Sighting",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "missing_person_id",
+									"value": "{{missing_person_id}}",
+									"type": "text"
+								},
+								{
+									"key": "sighting_latitude",
+									"value": "18.4850",
+									"type": "text"
+								},
+								{
+									"key": "sighting_longitude",
+									"value": "-69.9400",
+									"type": "text"
+								},
+								{
+									"key": "sighting_address",
+									"value": "Parque Independencia, Santo Domingo",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Vi a esta persona caminando por el parque",
+									"type": "text"
+								},
+								{
+									"key": "sighting_date",
+									"value": "2025-10-31T15:00:00Z",
+									"type": "text"
+								},
+								{
+									"key": "photo",
+									"type": "file",
+									"src": "",
+									"description": "Foto del avistamiento (opcional)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/sightings/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"sightings",
+								""
+							]
+						},
+						"description": "Reporta que viste a una persona desaparecida"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Sightings for Missing Person",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/sightings/missing-person/{{missing_person_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"sightings",
+								"missing-person",
+								"{{missing_person_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Sightings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/sightings/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"sightings",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Found Reports (Hallazgos)",
+			"item": [
+				{
+					"name": "Report Found Person",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"found_report_id\", jsonData.id);",
+									"    console.log(\"Found Report ID guardado: \" + jsonData.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "missing_person_id",
+									"value": "{{missing_person_id}}",
+									"type": "text"
+								},
+								{
+									"key": "found_latitude",
+									"value": "18.4900",
+									"type": "text"
+								},
+								{
+									"key": "found_longitude",
+									"value": "-69.9350",
+									"type": "text"
+								},
+								{
+									"key": "found_address",
+									"value": "Centro de Salud, Zona Colonial",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Encontré a esta persona en el centro de salud, está bien",
+									"type": "text"
+								},
+								{
+									"key": "found_date",
+									"value": "2025-10-31T16:00:00Z",
+									"type": "text"
+								},
+								{
+									"key": "contact_info",
+									"value": "+1-809-555-5678",
+									"type": "text"
+								},
+								{
+									"key": "photo",
+									"type": "file",
+									"src": "",
+									"description": "Foto de confirmación (opcional)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/found-reports/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"found-reports",
+								""
+							]
+						},
+						"description": "Reporta que encontraste a una persona desaparecida"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Found Reports for Missing Person",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/found-reports/missing-person/{{missing_person_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"found-reports",
+								"missing-person",
+								"{{missing_person_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Found Reports",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/found-reports/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"found-reports",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Found Report",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/found-reports/{{found_report_id}}/confirm",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"found-reports",
+								"{{found_report_id}}",
+								"confirm"
+							]
+						},
+						"description": "Confirma que la persona fue encontrada (solo reportante original)"
+					},
+					"response": []
+				},
+				{
+					"name": "Reject Found Report",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/found-reports/{{found_report_id}}/reject",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"found-reports",
+								"{{found_report_id}}",
+								"reject"
+							]
+						},
+						"description": "Rechaza el reporte de hallazgo (solo reportante original)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "6. Alerts",
+			"item": [
+				{
+					"name": "Get My Alerts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/alerts/me?limit=50&offset=0&unread_only=false",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"alerts",
+								"me"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "50"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "unread_only",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Alert as Read",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/alerts/ALERT_ID/read",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"alerts",
+								"ALERT_ID",
+								"read"
+							]
+						},
+						"description": "Reemplaza ALERT_ID con un ID real de alerta"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Alert Interaction",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"interaction_type\": \"helpful\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/alerts/ALERT_ID/interaction",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"alerts",
+								"ALERT_ID",
+								"interaction"
+							]
+						},
+						"description": "interaction_type: viewed, ignored, helpful"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Alert Stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/alerts/stats",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"alerts",
+								"stats"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

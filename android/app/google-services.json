@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "628343819365",
+    "project_id": "backtohome-d6663",
+    "storage_bucket": "backtohome-d6663.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:628343819365:android:05a82c1e77d06b12f1ca8c",
+        "android_client_info": {
+          "package_name": "com.backtohome.backtohome_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgaS7LVnZpLjTo_v_2w7OFGmPsTU0YX-A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
