@@ -126,9 +126,6 @@ class _MyReportsTabState extends State<MyReportsTab> {
       separatorBuilder: (_, __) => const SizedBox(height: AppTheme.paddingMedium),
       itemBuilder: (context, index) {
         final report = _myReports[index];
-        final circumstancesText = report.circumstances.isNotEmpty
-            ? report.circumstances
-            : 'Sin información registrada';
         return _ReportCard(report: report);
       },
     );

@@ -194,23 +194,23 @@ class _MapTabState extends State<MapTab> {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(AppTheme.paddingLarge),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
                 Icons.location_off,
-                size: 64,
-                color: AppTheme.errorColor,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                _error!,
-                style: AppTheme.bodyLarge.copyWith(color: AppTheme.errorColor),
-                textAlign: TextAlign.center,
-              ),
+              size: 64,
+              color: AppTheme.errorColor,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              _error!,
+              style: AppTheme.bodyLarge.copyWith(color: AppTheme.errorColor),
+              textAlign: TextAlign.center,
+            ),
               const SizedBox(height: 24),
               ElevatedButton.icon(
-                onPressed: _loadNearbyPersons,
+              onPressed: _loadNearbyPersons,
                 icon: const Icon(Icons.refresh),
                 label: const Text('Reintentar'),
                 style: ElevatedButton.styleFrom(
@@ -219,8 +219,8 @@ class _MapTabState extends State<MapTab> {
                     vertical: 12,
                   ),
                 ),
-              ),
-            ],
+            ),
+          ],
           ),
         ),
       );
@@ -278,10 +278,10 @@ class _MapTabState extends State<MapTab> {
             AppTheme.paddingMedium + 16,
           ),
           child: StatefulBuilder(
-            builder: (context, setState) => Column(
-              mainAxisSize: MainAxisSize.min,
+          builder: (context, setState) => Column(
+            mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+            children: [
                 Center(
                   child: Container(
                     width: 48,
@@ -298,7 +298,7 @@ class _MapTabState extends State<MapTab> {
                   style: AppTheme.headlineSmall,
                 ),
                 const SizedBox(height: AppTheme.paddingSmall),
-                Text(
+              Text(
                   'Ajusta el radio de búsqueda para encontrar personas desaparecidas cerca de tu ubicación.',
                   style: AppTheme.bodyMedium.copyWith(color: AppTheme.textSecondary),
                 ),
@@ -307,14 +307,14 @@ class _MapTabState extends State<MapTab> {
                   label: 'Radio de búsqueda',
                   value: '${tempRadius.toStringAsFixed(0)} km',
                   icon: Icons.radar,
-                ),
-                Slider(
+              ),
+              Slider(
                   value: tempRadius,
-                  min: 1.0,
+                min: 1.0,
                   max: 200.0,
                   divisions: 199,
                   label: '${tempRadius.toStringAsFixed(0)} km',
-                  onChanged: (value) {
+                onChanged: (value) {
                     setState(() => tempRadius = value);
                   },
                 ),
@@ -359,22 +359,22 @@ class _MapTabState extends State<MapTab> {
                         Navigator.pop(context);
                         _radius = value;
                         _loadNearbyPersons();
-                      },
-                    ),
-                  ],
-                ),
+                },
+              ),
+            ],
+          ),
                 const SizedBox(height: AppTheme.paddingLarge),
                 FilledButton.icon(
-                  onPressed: () {
-                    Navigator.pop(context);
+            onPressed: () {
+              Navigator.pop(context);
                     setState(() => _radius = tempRadius);
-                    _loadNearbyPersons();
-                  },
+              _loadNearbyPersons();
+            },
                   icon: const Icon(Icons.check_circle_outline),
                   label: const Text('Aplicar filtro'),
-                ),
-              ],
-            ),
+          ),
+        ],
+      ),
           ),
         );
       },

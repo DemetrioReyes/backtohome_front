@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_service.dart';
+import '../services/notification_service.dart';
 import '../config/app_theme.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -28,6 +29,9 @@ class _SplashScreenState extends State<SplashScreen> {
     if (!mounted) return;
 
     if (isAuth) {
+      final notificationService = context.read<NotificationService>();
+      await notificationService.syncDeviceToken();
+      if (!mounted) return;
       Navigator.of(context).pushReplacementNamed('/home');
     } else {
       Navigator.of(context).pushReplacementNamed('/login');

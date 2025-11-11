@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../services/auth_service.dart';
 import '../../config/app_theme.dart';
+import '../../services/notification_service.dart';
 import '../../models/user.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -57,6 +58,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (confirmed == true && mounted) {
       final authService = context.read<AuthService>();
+      final notificationService = context.read<NotificationService>();
+
+      await notificationService.clearStoredToken();
       await authService.logout();
 
       if (mounted) {

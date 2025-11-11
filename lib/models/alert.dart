@@ -75,6 +75,26 @@ class Alert {
         return 'Sin interacción';
     }
   }
+
+  Alert copyWith({
+    double? distanceKm,
+    bool? isRead,
+    String? interactionType,
+    DateTime? interactionAt,
+    MissingPersonSummary? missingPerson,
+  }) {
+    return Alert(
+      id: id,
+      missingPersonId: missingPersonId,
+      sentToUserId: sentToUserId,
+      distanceKm: distanceKm ?? this.distanceKm,
+      sentAt: sentAt,
+      isRead: isRead ?? this.isRead,
+      interactionType: interactionType ?? this.interactionType,
+      interactionAt: interactionAt ?? this.interactionAt,
+      missingPerson: missingPerson ?? this.missingPerson,
+    );
+  }
 }
 
 class MissingPersonSummary {
@@ -97,11 +117,13 @@ class MissingPersonSummary {
   factory MissingPersonSummary.fromJson(Map<String, dynamic> json) {
     return MissingPersonSummary(
       id: json['id'] as String,
-      fullName: json['full_name'] as String,
-      age: json['age'] as int,
-      gender: json['gender'] as String,
-      photoUrl: json['photo_url'] as String,
-      status: json['status'] as String,
+      fullName: json['full_name'] as String? ?? 'Desconocido',
+      age: json['age'] is int
+          ? json['age'] as int
+          : int.tryParse('${json['age']}') ?? 0,
+      gender: json['gender'] as String? ?? 'unknown',
+      photoUrl: json['photo_url'] as String? ?? '',
+      status: json['status'] as String? ?? 'unknown',
     );
   }
 

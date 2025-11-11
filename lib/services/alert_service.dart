@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../models/alert.dart';
 import 'api_client.dart';
 
@@ -22,9 +24,25 @@ class AlertService {
       );
 
       if (response.isSuccess && response.data != null) {
-        final data = response.data as List<dynamic>;
+        final rawData = response.data;
+        List<dynamic> data = const [];
+
+        if (rawData is List) {
+          data = rawData;
+        } else if (rawData is Map<String, dynamic>) {
+          final results = rawData['results'];
+          if (results is List) {
+            data = results;
+          } else if (kDebugMode) {
+            debugPrint(
+              'Respuesta inesperada de alertas: $rawData',
+            );
+          }
+        }
+
         final alerts = data
-            .map((json) => Alert.fromJson(json as Map<String, dynamic>))
+            .whereType<Map<String, dynamic>>()
+            .map(Alert.fromJson)
             .toList();
         return AlertListResult.success(alerts);
       }

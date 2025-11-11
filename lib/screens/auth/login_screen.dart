@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../services/auth_service.dart';
+import '../../services/notification_service.dart';
 import '../../config/app_theme.dart';
 import 'register_screen.dart';
 
@@ -41,6 +42,14 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = false);
 
     if (result.isSuccess) {
+      final notificationService = context.read<NotificationService>();
+      try {
+        await notificationService.syncDeviceToken(force: true);
+      } catch (e, stack) {
+        debugPrint('Error sincronizando token tras login: $e\n$stack');
+      }
+      if (!mounted) return;
+
       Navigator.of(context).pushReplacementNamed('/home');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

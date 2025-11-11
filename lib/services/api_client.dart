@@ -180,12 +180,12 @@ class ApiClient {
             mediaType = null;
           }
 
-          final multipartFile = await http.MultipartFile.fromPath(
+      final multipartFile = await http.MultipartFile.fromPath(
             entry.key,
             filePath,
             contentType: mediaType,
-          );
-          request.files.add(multipartFile);
+      );
+      request.files.add(multipartFile);
         }
       }
 
